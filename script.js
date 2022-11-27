@@ -1,1 +1,51 @@
-console.log("Hello World")
+let weather = {
+    // API key used to retreive data from database
+    apiKey: "458a575ef79af05b53e6d63ee265681f",
+    fetchWeather: function (city) {
+        // FAtching the data from the api
+        fetch("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=" + this.apiKey)
+        // after we retreive the data from the api we want it to repond in JSON data
+        .then((response) => response.json())
+        // after we receive the data  we console.log in the console
+        .then((data) => this.displayWeather(data));
+    },
+
+
+    // This will help use retieve the data for each section and replace the or fill in the data for the proper section
+    displayWeather: function(data) {
+        const { name } = data;
+        const { icon, description } = data.weather[0];
+        const { temp, humidity } = data.main;
+        const { speed } = data.wind;
+        document.querySelector(".city").innerText = "Weather in " + name;
+        document.querySelector(".icon").src = "http://openweathermap.org/img/wn/"+ icon + "@2x.png";
+        document.querySelector(".description").innerText = description;
+        document.querySelector(".temp").innerText = temp + "°F";
+        document.querySelector(".humidity").innerText = "Humidity: " + humidity + "%";
+        document.querySelector(".wind").innerText = "wind speed: " + speed + " mph";
+        document.querySelector(".weather").classList.remove("loading");
+
+
+    },
+    search: function () {
+        this.fetchWeather(document.querySelector(".search-bar").value);
+
+    }
+
+
+};
+
+document.querySelector(".search button")
+.addEventListener("click", function() {
+    weather.search();
+
+});
+
+document.querySelector(".search-bar").addEventListener("keyup", function (event) {
+    if (event.key == "Enter") {
+        weather.search()
+    }
+
+})
+
+weather.fetchWeather("Soledad de Graciano Sanchez");
